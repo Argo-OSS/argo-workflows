@@ -2,23 +2,23 @@ import * as React from 'react';
 import {Pagination, parseLimit} from '../pagination';
 import {WarningIcon} from './fa-icons';
 
-export class PaginationPanel extends React.Component<{pagination: Pagination; onChange: (pagination: Pagination) => void; numRecords: number}> {
+export class PaginationPanel extends React.Component<{pagination: Pagination; onChange: (pagination: Pagination) => void; numRecords: number; isNextButtonDisable?: boolean}> {
     public render() {
         return (
             <p style={{paddingBottom: '45px'}}>
                 <button
                     disabled={!this.props.pagination.offset}
                     className='argo-button argo-button--base-o'
-                    onClick={() => this.props.onChange({limit: this.props.pagination.limit})}>
+                    onClick={() => this.props.onChange({limit: this.props.pagination.limit, offset: '0'})}>
                     First page
                 </button>
                 <button
-                    disabled={!this.props.pagination.nextOffset}
+                    disabled={this.props.isNextButtonDisable}
                     className='argo-button argo-button--base-o'
                     onClick={() =>
                         this.props.onChange({
                             limit: this.props.pagination.limit,
-                            offset: this.props.pagination.nextOffset
+                            offset: String(Number(this.props.pagination.offset) + this.props.pagination.limit),
                         })
                     }>
                     Next page <i className='fa fa-chevron-right' />
@@ -41,7 +41,7 @@ export class PaginationPanel extends React.Component<{pagination: Pagination; on
                             // the results we're requesting.  If we're requesting all records,
                             // we should not skip any by setting an offset.
                             if (limit) {
-                                newValue.offset = this.props.pagination.offset;
+                                newValue.offset = '0';
                             }
 
                             this.props.onChange(newValue);

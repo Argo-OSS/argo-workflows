@@ -41,7 +41,7 @@ export const WorkflowTemplateList = ({match, location, history}: RouteComponentP
     const [namePattern, setNamePattern] = useState('');
     const [labels, setLabels] = useState([]);
     const [pagination, setPagination] = useState<Pagination>({
-        offset: queryParams.get('offset'),
+        offset: '0',
         limit: parseLimit(queryParams.get('limit')) || savedOptions.paginationLimit || 500
     });
 
@@ -70,7 +70,7 @@ export const WorkflowTemplateList = ({match, location, history}: RouteComponentP
         services.workflowTemplate
             .list(namespace, labels, namePattern, pagination)
             .then(list => {
-                setPagination({...pagination, nextOffset: list.metadata.continue});
+                setPagination({...pagination, offset: pagination.offset});
                 setTemplates(list.items || []);
             })
             .then(() => setError(null))
@@ -112,6 +112,7 @@ export const WorkflowTemplateList = ({match, location, history}: RouteComponentP
                                 setNamespace(namespaceValue);
                                 setNamePattern(namePatternValue);
                                 setLabels(labelsValue);
+                                setPagination({...pagination, offset: '0'})
                             }}
                         />
                     </div>
@@ -155,7 +156,7 @@ export const WorkflowTemplateList = ({match, location, history}: RouteComponentP
                             <Footnote>
                                 <InfoIcon /> Workflow templates are reusable templates you can create new workflows from. <ExampleManifests />. {learnMore}.
                             </Footnote>
-                            <PaginationPanel onChange={setPagination} pagination={pagination} numRecords={null} />
+                            <PaginationPanel onChange={setPagination} pagination={pagination} numRecords={null} isNextButtonDisable={templates.length != pagination.limit} />
                         </>
                     )}
                 </div>
