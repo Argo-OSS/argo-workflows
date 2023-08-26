@@ -128,12 +128,6 @@ func (wts *WorkflowTemplateServer) ListWorkflowTemplates(ctx context.Context, re
 
 	sort.Sort(wfList.Items)
 
-	// Calculate new offset for next batch
-	newOffset := intOffset + len(wfList.Items)
-	if limit != 0 && len(wfList.Items) == int(limit) {
-		wfList.ListMeta.Continue = strconv.Itoa(newOffset)
-	}
-
 	return wfList, nil
 }
 
